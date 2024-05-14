@@ -2,6 +2,7 @@ package com.example.todo2.config;
 
 import com.example.todo2.security.APIUserDetailService;
 import com.example.todo2.security.filter.APILoginFilter;
+import com.example.todo2.security.handler.APILoginSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -61,6 +62,11 @@ public class CustomSecurityConfig {
         //APILoginFilter
         APILoginFilter apiLoginFilter = new APILoginFilter("/generateToken");
         apiLoginFilter.setAuthenticationManager(authenticationManager);
+
+        //APILoginSuccessHandler
+        APILoginSuccessHandler successHandler = new APILoginSuccessHandler();
+        //SuccessHandler
+        apiLoginFilter.setAuthenticationSuccessHandler(successHandler);
 
         //APILoginFilter 위치 조정
         http.addFilterBefore(apiLoginFilter, UsernamePasswordAuthenticationFilter.class);
