@@ -46,6 +46,9 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.9'
 
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
+    implementation 'javax.xml.bind:jaxb-api:2.3.1'
+
 }
 
 tasks.named('test') {
