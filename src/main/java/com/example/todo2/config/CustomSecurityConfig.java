@@ -2,6 +2,7 @@ package com.example.todo2.config;
 
 import com.example.todo2.security.APIUserDetailService;
 import com.example.todo2.security.filter.APILoginFilter;
+import com.example.todo2.security.filter.TokenCheckFilter;
 import com.example.todo2.security.handler.APILoginSuccessHandler;
 import com.example.todo2.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
@@ -75,6 +76,12 @@ public class CustomSecurityConfig {
         //APILoginFilter 위치 조정
         http.addFilterBefore(apiLoginFilter, UsernamePasswordAuthenticationFilter.class);
 
+        //api로 시작하는 모든 경로는 TokenCheckFilter 동작
+        http.addFilterBefore(
+                tokenCheckFilter(jwtUtil),
+                UsernamePasswordAuthenticationFilter.class
+        );
+
         http
                 .csrf(csrf ->
                         csrf.disable()
@@ -83,6 +90,10 @@ public class CustomSecurityConfig {
                 );
 
         return http.build();
+    }
+
+    private TokenCheckFilter tokenCheckFilter(JWTUtil jwtUtil){
+        return new TokenCheckFilter(jwtUtil);
     }
 
 
