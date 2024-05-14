@@ -36,7 +36,7 @@ public class APIUserDetailService implements UserDetailsService {
         //모든 사용자의 권한은 'ROLE_USER'
         APIUserDTO dto = new APIUserDTO(
                 apiUser.getMid(),
-                apiUser.getMpw(), ,
+                apiUser.getMpw(),
                 List.of(new SimpleGrantedAuthority("ROLE_USER"))
         );
 
