@@ -3,6 +3,7 @@ package com.example.todo2.config;
 import com.example.todo2.security.APIUserDetailService;
 import com.example.todo2.security.filter.APILoginFilter;
 import com.example.todo2.security.handler.APILoginSuccessHandler;
+import com.example.todo2.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -27,6 +28,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class CustomSecurityConfig {
 
+    private final JWTUtil jwtUtil;
     private final APIUserDetailService apiUserDetailService;
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -48,6 +50,8 @@ public class CustomSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
 
+        log.info("------------configure-------------------");
+
         //AutenticationManager 설정
         AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
 
@@ -64,20 +68,20 @@ public class CustomSecurityConfig {
         apiLoginFilter.setAuthenticationManager(authenticationManager);
 
         //APILoginSuccessHandler
-        APILoginSuccessHandler successHandler = new APILoginSuccessHandler();
+        APILoginSuccessHandler successHandler = new APILoginSuccessHandler(jwtUtil);
         //SuccessHandler
         apiLoginFilter.setAuthenticationSuccessHandler(successHandler);
 
         //APILoginFilter 위치 조정
         http.addFilterBefore(apiLoginFilter, UsernamePasswordAuthenticationFilter.class);
 
-        log.info("------------configure-------------------");
         http
                 .csrf(csrf ->
                         csrf.disable()
                 )
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 );
+
         return http.build();
     }
 
