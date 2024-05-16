@@ -1,8 +1,15 @@
 package com.example.todo2.config;
 
+import io.swagger.v3.oas.annotations.security.SecuritySchemes;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
+import org.springdoc.core.customizers.OpenApiCustomizer;
+import org.springdoc.core.customizers.OperationCustomizer;
+import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -47,13 +54,24 @@ import io.swagger.v3.oas.models.info.Info;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Configuration
 public class SwaggerConfig {
     @Bean
     public OpenAPI openAPI() {
+        String jwtSchemeName = "Authorization";
+        SecurityRequirement securityRequirement = new SecurityRequirement().addList(jwtSchemeName);
+        Components components = new Components().addSecuritySchemes(jwtSchemeName,
+                new SecurityScheme()
+                        .name(jwtSchemeName)
+                        .in(SecurityScheme.In.HEADER)
+                        .type(SecurityScheme.Type.APIKEY));
         return new OpenAPI()
-                .components(new Components())
-                .info(apiInfo());
+                .info(apiInfo())
+                .addSecurityItem(securityRequirement)
+                .components(components);
     }
 
     private Info apiInfo() {
