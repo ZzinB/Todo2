@@ -2,6 +2,7 @@ package com.example.todo2.config;
 
 import com.example.todo2.security.APIUserDetailService;
 import com.example.todo2.security.filter.APILoginFilter;
+import com.example.todo2.security.filter.RefreshTokenFilter;
 import com.example.todo2.security.filter.TokenCheckFilter;
 import com.example.todo2.security.handler.APILoginSuccessHandler;
 import com.example.todo2.util.JWTUtil;
@@ -81,6 +82,9 @@ public class CustomSecurityConfig {
                 tokenCheckFilter(jwtUtil),
                 UsernamePasswordAuthenticationFilter.class
         );
+
+        //refreshToken 호출
+        http.addFilterBefore(new RefreshTokenFilter("/refreshToken", jwtUtil), TokenCheckFilter.class);
 
         http
                 .csrf(csrf ->
